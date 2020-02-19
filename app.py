@@ -9,7 +9,8 @@ from DataStructures import Queue
 
 # there queue has to be declared globally (outside any other function)
 # that way all methods have access to it
-queue = Queue(mode="FIFO")
+queue = Queue(mode="FIFO", current_queue=['Sam', 'Frodo', 'Pippin'])
+
 
 def show_main_menu():
     print('''
@@ -28,10 +29,41 @@ def print_queue():
     # you must print on the console the entire queue list
     print("Printing the entire list...")
     print(queue.get_queue())
-        
+
+def enqueue():
+    print('\nWho would you like to add to the queue?')
+    person = input()
+    queue.enqueue( person )
+    ppl_in_front = queue.size() - 1 if queue._mode == 'FIFO' else 0
+    qty = 'is 1 person' if ppl_in_front == 1 else f'are {ppl_in_front} people'
+    print(f'{person} has been added to queue. There {qty} before them.')
+
+def dequeue():
+    print('\nThe person in front is leaving the queue.')
+    queue.dequeue( )
+    print('Someone has been removed from the queue.')
+
+def get_json_queue():
+    with open('queue.json','r') as jfile:
+        get_json_queue = json.load(jfile)
+    return get_json_queue
+
+def import_queue():
+    print('Importing queue from json file...')
+    jfile = open('queue.json','r')
+    global queue
+    queue = Queue( mode='FIFO', current_queue=json.load(jfile) )
+    jfile.close()
+    print_queue()
+
+def export_queue():
+    with open('queue.json', 'w') as json_file:
+        json.dump(queue._queue, json_file)
+    return queue._queue
+
 def start():
     
-    print("\nHello, this is the Command Line Interface for a Queue Managment application.");
+    print("\nHello, this is the Command Line Interface for a Queue Managment application.")
     while True:
         
         option = show_main_menu()
@@ -39,11 +71,20 @@ def start():
         try: #converting the user input into an integer
             option = int(option)
         except ValueError:
-            print("Invalid option "+str(option))
+            print("Invalid opinion "+str(option))
 
         # add your options here using conditionals (if)
+        if option == 1:
+            enqueue()
+        if option == 2:
+            dequeue()
         if option == 3:
             print_queue()
+        if option == 4:
+            import_queue()
+        if option == 5:
+            r = get_json_queue()
+            print('func', r)
         elif option == 6:
             print("Bye bye!")
             return None
